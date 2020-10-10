@@ -14,6 +14,7 @@ var index = require('./routes/index');
 var users = require('./routes/users');
 var room = require('./routes/room');
 var message = require('./routes/message');
+var post = require('./routes/post');
 var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -45,7 +46,7 @@ let max = Math.max(...ids);
  Step 2:
  -Kết nối mongdDB:
 
- mongo --port 27017 -u "admin" -p "admin" --authenticationDatabase "DBReact"
+ mongo --port 27017 -u "admin" -p "admin" --authenticationDatabase "DBProject3"
 
 -Kết nối thành công sẽ hiển thị trên terminal "connect DB successfully"
  */
@@ -58,7 +59,7 @@ let options = {
 };
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/DBReact').then(
+mongoose.connect('mongodb://localhost:27017/DBProject3').then(
     () => {
         console.log("connect DB successfully");
     },
@@ -172,6 +173,7 @@ app.use(express.static(path.join(__dirname, 'public')));
 app.use('/users', users);
 app.use('/room', room);
 app.use('/message', message);
+app.use('/post', post);
 app.use('/', index);
 
 app.use(function (req, res, next) {
