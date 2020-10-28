@@ -15,6 +15,10 @@ var users = require('./routes/users');
 var room = require('./routes/room');
 var message = require('./routes/message');
 var post = require('./routes/post');
+var follow = require('./routes/follow');
+var like = require('./routes/like');
+var comment = require('./routes/comment');
+var notification = require('./routes/notification');
 var path = require('path');
 var logger = require('morgan');
 var cookieParser = require('cookie-parser');
@@ -59,7 +63,7 @@ let options = {
 };
 
 mongoose.Promise = global.Promise;
-mongoose.connect('mongodb://localhost:27017/DBProject3').then(
+mongoose.connect('mongodb://localhost:27017/FacebookDB').then(
     () => {
         console.log("connect DB successfully");
     },
@@ -174,6 +178,10 @@ app.use('/users', users);
 app.use('/room', room);
 app.use('/message', message);
 app.use('/post', post);
+app.use('/follow', follow);
+app.use('/like', like);
+app.use('/comment', comment);
+app.use('/notification', notification);
 app.use('/', index);
 
 app.use(function (req, res, next) {

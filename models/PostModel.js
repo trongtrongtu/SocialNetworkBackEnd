@@ -8,6 +8,9 @@ var PostSchema = new Schema({
   userImg: {
     type: String,
   },
+  postImg: {
+    type: String
+  },
   text: {
     type: String,
   },

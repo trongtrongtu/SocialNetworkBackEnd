@@ -1,14 +1,15 @@
 var router = global.router;
-let Post = require('../models/PostModel');
+let Post = require('../models/Post');
 var mongoose = require('mongoose');
 
 router.get('/list_all_post', (request, response) => {
   Post.find({}).limit(100).sort({ name: 1 }).select({
-    _id: 1,
-    name: 1,
-    userImg: 1,
-    text: 1,
-    created_date: 1,
+    title: 1,
+    image: 1,
+    imagePublicId: 1,
+    author: 1,
+    likes: 1,
+    comments: 1,
   }).exec((err, post) => {
     if (err) {
       response.json({
@@ -27,9 +28,12 @@ router.get('/list_all_post', (request, response) => {
 });
 router.post('/create_post', (request, response) => {
   const newRoom = new Post({
-    name: request.body.name,
-    userImg: request.body.userImg,
-    text: request.body.text,
+    title: request.body.title,
+    image: request.body.image,
+    imagePublicId: request.body.imagePublicId,
+    author: request.body.author,
+    likes: request.body.likes,
+    comments: request.body.comments
   });
   newRoom.save((err) => {
     debugger;
@@ -43,9 +47,12 @@ router.post('/create_post', (request, response) => {
       response.json({
         result: "ok",
         data: {
-          name: request.body.name,
-          userImg: request.body.userImg,
-          text: request.body.text,
+          title: request.body.title,
+          image: request.body.image,
+          imagePublicId: request.body.imagePublicId,
+          author: request.body.author,
+          likes: request.body.likes,
+          comments: request.body.comments,
           messege: "Create room successfully"
         }
       });
