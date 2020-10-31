@@ -1,5 +1,5 @@
 const mongoose = require('mongoose');
-import bcrypt from 'bcryptjs';
+// import bcrypt from 'bcryptjs';
 
 const Schema = mongoose.Schema;
 
@@ -40,42 +40,42 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    posts: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Post',
-      },
-    ],
-    likes: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Like',
-      },
-    ],
-    comments: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Comment',
-      },
-    ],
-    followers: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Follow',
-      },
-    ],
-    following: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Follow',
-      },
-    ],
-    notifications: [
-      {
-        type: Schema.Types.ObjectId,
-        ref: 'Notification',
-      },
-    ],
+    // posts: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Post',
+    //   },
+    // ],
+    // likes: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Like',
+    //   },
+    // ],
+    // comments: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Comment',
+    //   },
+    // ],
+    // followers: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Follow',
+    //   },
+    // ],
+    // following: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Follow',
+    //   },
+    // ],
+    // notifications: [
+    //   {
+    //     type: Schema.Types.ObjectId,
+    //     ref: 'Notification',
+    //   },
+    // ],
     messages: [
       {
         type: Schema.Types.ObjectId,
@@ -91,21 +91,21 @@ const userSchema = new Schema(
 /**
  * Hashes the users password when saving it to DB
  */
-userSchema.pre('save', function (next) {
-  if (!this.isModified('password')) {
-    return next();
-  }
+// userSchema.pre('save', function (next) {
+//   if (!this.isModified('password')) {
+//     return next();
+//   }
 
-  bcrypt.genSalt(10, (err, salt) => {
-    if (err) return next(err);
+//   bcrypt.genSalt(10, (err, salt) => {
+//     if (err) return next(err);
 
-    bcrypt.hash(this.password, salt, (err, hash) => {
-      if (err) return next(err);
+//     bcrypt.hash(this.password, salt, (err, hash) => {
+//       if (err) return next(err);
 
-      this.password = hash;
-      next();
-    });
-  });
-});
+//       this.password = hash;
+//       next();
+//     });
+//   });
+// });
 
 module.exports = mongoose.model('User', userSchema);
