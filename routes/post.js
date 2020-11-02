@@ -14,6 +14,8 @@ router.get('/list_all_post', (request, response) => {
     author: 1,
     likes: 1,
     comments: 1,
+    createdAt: 1,
+    updatedAt: 1
   }).exec((err, postArr) => {
     if (err) {
       response.json({
@@ -23,9 +25,9 @@ router.get('/list_all_post', (request, response) => {
       });
     } else {
       let dataArr = []
-      let likeItem = []
-      let commentItem = []
       postArr.map((item, index) => {
+        let likeItem = []
+        let commentItem = []
         let userId = item.author
         User.findOne({ _id: userId }).limit(100).sort({}).select({
           fullName: 1,
@@ -40,7 +42,7 @@ router.get('/list_all_post', (request, response) => {
               post: 1,
             }).exec((err, like) => {
               likeItem.push(like)
-              if ((index1 + 1) == likeArr.length) {
+              if (likeItem.length == likeArr.length) {
                 let commentsArr = item.comments
                 commentsArr.map((item2, index2) => {
                   Comment.findOne({ _id: item2 }).limit(100).sort({ user: 1 }).select({
@@ -56,7 +58,7 @@ router.get('/list_all_post', (request, response) => {
                     }).exec((err, user) => {
                       comments['author'] = user
                       commentItem.push(comments)
-                      if ((index2 + 1) == commentsArr.length) {
+                      if (commentItem.length == commentsArr.length) {
                         item['likes'] = likeItem;
                         item['comments'] = commentItem;
                         dataArr.push(item)
