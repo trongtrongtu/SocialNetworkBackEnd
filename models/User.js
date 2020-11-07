@@ -40,12 +40,12 @@ const userSchema = new Schema(
       type: Boolean,
       default: false,
     },
-    // posts: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Post',
-    //   },
-    // ],
+    posts: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Post',
+      },
+    ],
     // likes: [
     //   {
     //     type: Schema.Types.ObjectId,
@@ -58,18 +58,18 @@ const userSchema = new Schema(
     //     ref: 'Comment',
     //   },
     // ],
-    // followers: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Follow',
-    //   },
-    // ],
-    // following: [
-    //   {
-    //     type: Schema.Types.ObjectId,
-    //     ref: 'Follow',
-    //   },
-    // ],
+    followers: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Follow',
+      },
+    ],
+    following: [
+      {
+        type: Schema.Types.ObjectId,
+        ref: 'Follow',
+      },
+    ],
     // notifications: [
     //   {
     //     type: Schema.Types.ObjectId,

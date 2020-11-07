@@ -7,17 +7,16 @@ router.get('/list_all_users', (request, response) => {
     fullName: 1,
     email: 1,
     username: 1,
-    passwordResetToken: 1,
-    passwordResetTokenExpiry: 1,
-    password: 1,
     image: 1,
     imagePublicId: 1,
     coverImage: 1,
     coverImagePublicId: 1,
-    createdAt: 1,
-    updatedAt: 1,
+    followers: 1,
+    following: 1,
+    posts: 1,
     isOnline: 1,
-    messages: 1
+    createdAt: 1,
+    updatedAt: 1
   }).exec((err, follow) => {
     if (err) {
       response.json({
@@ -34,6 +33,40 @@ router.get('/list_all_users', (request, response) => {
     }
   });
 });
+
+router.get('/profile', (request, response) => {
+  let userId = request.query.userId
+  User.findOne({ _id: userId }).limit(100).sort({ user: 1 }).select({
+    fullName: 1,
+    email: 1,
+    username: 1,
+    image: 1,
+    imagePublicId: 1,
+    coverImage: 1,
+    coverImagePublicId: 1,
+    followers: 1,
+    following: 1,
+    posts: 1,
+    isOnline: 1,
+    createdAt: 1,
+    updatedAt: 1
+  }).exec((err, follow) => {
+    if (err) {
+      response.json({
+        result: "failed",
+        data: [],
+        messege: `Error is : ${err}`
+      });
+    } else {
+      response.json({
+        result: "ok",
+        data: { getUser: follow },
+        messege: "Query room successfully"
+      });
+    }
+  });
+});
+
 router.post('/create_user', (request, response) => {
   const newUser = new User({
     fullName: request.body.fullName,

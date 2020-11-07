@@ -27,105 +27,119 @@ router.get('/list_all_notification', (request, response) => {
       });
     } else {
       let dataArr = []
-      notifications.map((item, index) => {
-        let userId = item.author
-        User.findOne({ _id: userId }).limit(100).sort({}).select({
-          fullName: 1,
-          username: 1,
-          image: 1,
-        }).exec((err, user) => {
-          item['author'] = user;
-          if (item.like) {
-            let likeId = item.like
-            Like.findOne({ _id: likeId }).limit(100).sort({ user: 1 }).select({
-              user: 1,
-              post: 1,
-            }).exec((err, like) => {
-              let likeId = like.post
-              Post.findOne({ _id: likeId }).limit(100).sort({}).select({
-                image: 1,
-              }).exec((err, post) => {
-                like['post'] = post
-                item['like'] = like;
-                dataArr.push(item)
-                if (dataArr.length == notifications.length) {
-                  response.json({
-                    result: "ok",
-                    data: {
-                      getUserNotifications: {
-                        count: `${notifications.length}`,
-                        notifications: dataArr,
-                        __typename: "NotificationsPayload"
-                      }
-                    },
-                    messege: "Query room successfully"
-                  });
-                }
+      if (notifications && notifications.length > 0) {
+        notifications.map((item, index) => {
+          let userId = item.author
+          User.findOne({ _id: userId }).limit(100).sort({}).select({
+            fullName: 1,
+            username: 1,
+            image: 1,
+          }).exec((err, user) => {
+            item['author'] = user;
+            if (item.like) {
+              let likeId = item.like
+              Like.findOne({ _id: likeId }).limit(100).sort({ user: 1 }).select({
+                user: 1,
+                post: 1,
+              }).exec((err, like) => {
+                let likeId = like.post
+                Post.findOne({ _id: likeId }).limit(100).sort({}).select({
+                  image: 1,
+                }).exec((err, post) => {
+                  like['post'] = post
+                  item['like'] = like;
+                  dataArr.push(item)
+                  if (dataArr.length == notifications.length) {
+                    response.json({
+                      result: "ok",
+                      data: {
+                        getUserNotifications: {
+                          count: `${notifications.length}`,
+                          notifications: dataArr,
+                          __typename: "NotificationsPayload"
+                        }
+                      },
+                      messege: "Query room successfully"
+                    });
+                  }
+                })
               })
-            })
-          } else if (item.follow) {
-            let followId = item.follow
-            Follow.findOne({ _id: followId }).limit(100).sort({ user: 1 }).select({
-              user: 1,
-              follower: 1,
-            }).exec((err, follow) => {
-              let userId = follow.user
-              User.findOne({ _id: userId }).limit(100).sort({}).select({
-                fullName: 1,
-                username: 1,
-                image: 1,
-              }).exec((err, user) => {
-                follow['user'] = user
-                item['follow'] = follow;
-                dataArr.push(item)
-                if (dataArr.length == notifications.length) {
-                  response.json({
-                    result: "ok",
-                    data: {
-                      getUserNotifications: {
-                        count: `${notifications.length}`,
-                        notifications: dataArr,
-                        __typename: "NotificationsPayload"
-                      }
-                    },
-                    messege: "Query room successfully"
-                  });
-                }
+            } else if (item.follow) {
+              let followId = item.follow
+              Follow.findOne({ _id: followId }).limit(100).sort({ user: 1 }).select({
+                user: 1,
+                follower: 1,
+              }).exec((err, follow) => {
+                let userId = follow.user
+                User.findOne({ _id: userId }).limit(100).sort({}).select({
+                  fullName: 1,
+                  username: 1,
+                  image: 1,
+                }).exec((err, user) => {
+                  follow['user'] = user
+                  item['follow'] = follow;
+                  dataArr.push(item)
+                  if (dataArr.length == notifications.length) {
+                    response.json({
+                      result: "ok",
+                      data: {
+                        getUserNotifications: {
+                          count: `${notifications.length}`,
+                          notifications: dataArr,
+                          __typename: "NotificationsPayload"
+                        }
+                      },
+                      messege: "Query room successfully"
+                    });
+                  }
+                })
               })
-            })
-          } else if (item.comment) {
-            let commentId = item.comment
-            Comment.findOne({ _id: commentId }).limit(100).sort({ user: 1 }).select({
-              comment: 1,
-              post: 1,
-              author: 1,
-            }).exec((err, comment) => {
-              let postId = comment.post
-              Post.findOne({ _id: postId }).limit(100).sort({}).select({
-                title: 1,
-                image: 1,
-              }).exec((err, post) => {
-                comment['post'] = post
-                item['comment'] = comment;
-                dataArr.push(item)
-                if (dataArr.length == notifications.length) {
-                  response.json({
-                    result: "ok",
-                    data: {
-                      getUserNotifications: {
-                        count: `${notifications.length}`,
-                        notifications: dataArr,
-                        __typename: "NotificationsPayload"
-                      }
-                    },
-                    messege: "Query room successfully"
-                  });
-                }
+            } else if (item.comment) {
+              let commentId = item.comment
+              Comment.findOne({ _id: commentId }).limit(100).sort({ user: 1 }).select({
+                comment: 1,
+                post: 1,
+                author: 1,
+              }).exec((err, comment) => {
+                let postId = comment.post
+                Post.findOne({ _id: postId }).limit(100).sort({}).select({
+                  title: 1,
+                  image: 1,
+                }).exec((err, post) => {
+                  comment['post'] = post
+                  item['comment'] = comment;
+                  dataArr.push(item)
+                  if (dataArr.length == notifications.length) {
+                    response.json({
+                      result: "ok",
+                      data: {
+                        getUserNotifications: {
+                          count: `${notifications.length}`,
+                          notifications: dataArr,
+                          __typename: "NotificationsPayload"
+                        }
+                      },
+                      messege: "Query room successfully"
+                    });
+                  }
+                })
               })
-            })
-          }
+            }
+          })
         })
-      })
+      } else {
+        response.json({
+          result: "ok",
+          data: {
+            getUserNotifications: {
+              count: `${notifications.length}`,
+              posts: [],
+              __typename: "NotificationsPayload"
+            }
+          },
+          messege: "Query room successfully"
+        });
+      }
     }
   });
 });
