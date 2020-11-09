@@ -20,7 +20,7 @@ router.get('/list_all_comment', (request, response) => {
       response.json({
         result: "ok",
         data: follow,
-        messege: "Query room successfully"
+        messege: "Query successfully"
       });
     }
   });
@@ -46,7 +46,7 @@ router.post('/create_comment', (request, response) => {
           comment: request.body.comment,
           post: request.body.post,
           author: request.body.author,
-          messege: "Create room successfully"
+          messege: "Create successfully"
         }
       });
     }

@@ -19,7 +19,7 @@ router.get('/list_all_like', (request, response) => {
       response.json({
         result: "ok",
         data: follow,
-        messege: "Query room successfully"
+        messege: "Query successfully"
       });
     }
   });
@@ -43,7 +43,7 @@ router.post('/create_like', (request, response) => {
         data: {
           user: request.body.user,
           post: request.body.post,
-          messege: "Create room successfully"
+          messege: "Create successfully"
         }
       });
     }

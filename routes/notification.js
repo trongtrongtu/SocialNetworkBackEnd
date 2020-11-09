@@ -59,7 +59,7 @@ router.get('/list_all_notification', (request, response) => {
                           __typename: "NotificationsPayload"
                         }
                       },
-                      messege: "Query room successfully"
+                      messege: "Query successfully"
                     });
                   }
                 })
@@ -89,7 +89,7 @@ router.get('/list_all_notification', (request, response) => {
                           __typename: "NotificationsPayload"
                         }
                       },
-                      messege: "Query room successfully"
+                      messege: "Query successfully"
                     });
                   }
                 })
@@ -119,7 +119,7 @@ router.get('/list_all_notification', (request, response) => {
                           __typename: "NotificationsPayload"
                         }
                       },
-                      messege: "Query room successfully"
+                      messege: "Query successfully"
                     });
                   }
                 })
@@ -137,7 +137,7 @@ router.get('/list_all_notification', (request, response) => {
               __typename: "NotificationsPayload"
             }
           },
-          messege: "Query room successfully"
+          messege: "Query successfully"
         });
       }
     }
@@ -172,7 +172,7 @@ router.post('/create_notification', (request, response) => {
           follow: request.body.follow,
           comment: request.body.comment,
           seen: request.body.seen,
-          messege: "Create room successfully"
+          messege: "Create successfully"
         }
       });
     }

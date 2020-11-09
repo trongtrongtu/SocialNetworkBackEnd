@@ -19,7 +19,7 @@ router.get('/list_all_createroom', (request, response) => {
             response.json({
                 result: "ok",
                 data: createrooms,
-                messege: "Query room successfully"
+                messege: "Query successfully"
             });
         }
     });
@@ -40,7 +40,7 @@ router.get('/list_all_users_join_room', (request, response) => {  //
             response.json({
                 result: "ok",
                 data: joinrooms,
-                messege: "Query room successfully"
+                messege: "Query successfully"
             });
         }
     });
@@ -62,7 +62,7 @@ router.get('/list_all_users_with_room', (request, response) => {  // tra ve toan
             response.json({
                 result: "ok",
                 data: joinrooms,
-                messege: "Query room successfully"
+                messege: "Query successfully"
             });
         }
     });
@@ -84,12 +84,12 @@ router.get('/user_create_room', (request, response) => {
             response.json({
                 result: "ok",
                 data: createrooms,
-                messege: "Query room successfully"
+                messege: "Query successfully"
             });
         }
     });
 });
-router.get('/list_all_rooms_with_user', (request, response) => { 
+router.get('/list_all_rooms_with_user', (request, response) => {
     let username = request.query.username;
     UserJoinRoom.find({ username }).limit(100).sort({ name: 1 }).select({
         _id: 1,
@@ -106,7 +106,7 @@ router.get('/list_all_rooms_with_user', (request, response) => {
             response.json({
                 result: "ok",
                 data: joinrooms,
-                messege: "Query room successfully"
+                messege: "Query successfully"
             });
         }
     });
@@ -123,7 +123,7 @@ router.post('/create_room', (request, response) => {
                 result: "failed",
                 data: createrooms,
                 messege: "Room already exists "
-               
+
             });
         } else {
             const newRoom = new CreateRoom({
@@ -151,7 +151,7 @@ router.post('/create_room', (request, response) => {
                             username: request.body.username,
                             roomNameCreate: request.body.roomNameCreate,
                             passwordRoom: request.body.passwordRoom,
-                            messege: "Create room successfully"
+                            messege: "Create successfully"
                         }
                     });
                 }

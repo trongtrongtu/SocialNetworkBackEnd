@@ -5,7 +5,7 @@ var mongoose = require('mongoose');
 
 router.get('/message_with_user_to_user', (request, response) => {
     const messageWithUser = [];
-    ChatUserToUser.find({ }).limit(100).sort({ name: 1 }).select({
+    ChatUserToUser.find({}).limit(100).sort({ name: 1 }).select({
         _id: 1,
         username: 1,
         message: 1,
@@ -53,7 +53,7 @@ router.get('/message_with_user_to_user', (request, response) => {
                     response.json({
                         result: "ok",
                         data: messageWithUser,
-                        messege: "Query room successfully"
+                        messege: "Query successfully"
                     });
                 }
             }
@@ -86,7 +86,7 @@ router.get('/message_with_user_to_room', (request, response) => {
                 response.json({
                     result: "ok",
                     data: messages,
-                    messege: "Query room successfully"
+                    messege: "Query successfully"
                 });
             }
         }

@@ -73,7 +73,7 @@ router.get('/list_all_post', (request, response) => {
                                   __typename: "PostsPayload"
                                 }
                               },
-                              messege: "Query room successfully"
+                              messege: "Query successfully"
                             });
                           }
                         }
@@ -95,7 +95,7 @@ router.get('/list_all_post', (request, response) => {
               __typename: "PostsPayload"
             }
           },
-          messege: "Query room successfully"
+          messege: "Query successfully"
         });
       }
     }
@@ -161,7 +161,7 @@ router.get('/post_detail', (request, response) => {
                           getPost: postArr,
                           __typename: "PostPayload"
                         },
-                        messege: "Query room successfully"
+                        messege: "Query successfully"
                       });
                     }
                   })
@@ -242,7 +242,7 @@ router.get('/list_all_post_user', (request, response) => {
                                   __typename: "UserPostsPayload"
                                 }
                               },
-                              messege: "Query room successfully"
+                              messege: "Query successfully"
                             });
                           }
                         }
@@ -264,7 +264,7 @@ router.get('/list_all_post_user', (request, response) => {
               __typename: "UserPostsPayload"
             }
           },
-          messege: "Query room successfully"
+          messege: "Query successfully"
         });
       }
     }
@@ -298,7 +298,7 @@ router.post('/create_post', (request, response) => {
           author: request.body.author,
           likes: request.body.likes,
           comments: request.body.comments,
-          messege: "Create room successfully"
+          messege: "Create successfully"
         }
       });
     }
