@@ -2,7 +2,7 @@ var router = global.router;
 let User = require('../models/User');
 var mongoose = require('mongoose');
 
-router.get('/list_all_users', (request, response) => {
+router.get('/list_all_users_suggestions', (request, response) => {
   User.find({}).limit(100).sort({ user: 1 }).select({
     fullName: 1,
     email: 1,
@@ -27,7 +27,7 @@ router.get('/list_all_users', (request, response) => {
     } else {
       response.json({
         result: "ok",
-        data: follow,
+        data: { suggestPeople: follow },
         messege: "Query successfully"
       });
     }
