@@ -5,6 +5,8 @@ let Follow = require('../models/Follow');
 let Comment = require('../models/Comment');
 const User = require('../models/User');
 var mongoose = require('mongoose');
+let fs = require('fs');
+const URL = 'http://localhost:3001'
 
 router.get('/list_all_post', (request, response) => {
   Post.find({}).limit(100).sort({ name: 1 }).select({
@@ -29,6 +31,7 @@ router.get('/list_all_post', (request, response) => {
         postArr.map((item, index) => {
           let likeItem = []
           let commentItem = []
+          item.image = `${URL}/open_image?image_name=${item.image}`
           let userId = item.author
           User.findOne({ _id: userId }).limit(100).sort({}).select({
             fullName: 1,
@@ -271,37 +274,139 @@ router.get('/list_all_post_user', (request, response) => {
   });
 });
 
-router.post('/create_post', (request, response) => {
-  const newRoom = new Post({
-    title: request.body.title,
-    image: request.body.image,
-    imagePublicId: request.body.imagePublicId,
-    author: request.body.author,
-    likes: request.body.likes,
-    comments: request.body.comments
-  });
-  newRoom.save((err) => {
-    debugger;
+router.post('/create_post', (request, response, next) => {
+  let formidable = require('formidable');
+  // parse a file upload
+  var form = new formidable.IncomingForm();
+  form.uploadDir = "./uploads";
+  form.keepExtensions = true;
+  form.maxFieldsSize = 10 * 1024 * 1024; //10 MB
+  form.multiples = true;
+  form.parse(request, (err, fields, files) => {
     if (err) {
       response.json({
         result: "failed",
         data: {},
-        messege: `Error is : ${err}`
+        messege: `Cannot upload images.Error is : ${err}`
+      });
+    }
+    else {
+      var arrayOfFiles = [];
+      if (files[""] instanceof Array) {
+        arrayOfFiles = files[""];
+      } else {
+        arrayOfFiles.push(files[""]);
+      }
+
+      if (arrayOfFiles.length > 0) {
+        var fileNames = [];
+        arrayOfFiles.forEach((eachFile) => {
+          // fileNames.push(eachFile.path)
+          fileNames.push(eachFile.path.split('/')[1]);
+        });
+        const newRoom = new Post({
+          title: fields.title,
+          image: fileNames[0],
+          imagePublicId: (fileNames[0].split('.'))[0],
+          author: fields.authorId,
+          likes: [],
+          comments: []
+        });
+        newRoom.save((err) => {
+          debugger;
+          if (err) {
+            response.json({
+              result: "failed",
+              data: {},
+              messege: `Error is : ${err}`
+            });
+          } else {
+            response.json({
+              result: "ok",
+              data: {
+                title: fields.title,
+                image: fileNames[0],
+                imagePublicId: (fileNames[0].split('.'))[0],
+                author: fields.authorId,
+                likes: [],
+                comments: [],
+                messege: "Create successfully"
+              }
+            });
+          }
+        });
+      } else {
+        response.json({
+          result: "failed",
+          data: {},
+          numberOfImages: 0,
+          messege: "No images to upload !"
+        });
+      }
+    }
+  });
+});
+
+router.post('/upload_images', (request, response, next) => {
+  let formidable = require('formidable');
+  // parse a file upload
+  var form = new formidable.IncomingForm();
+  form.uploadDir = "./uploads";
+  form.keepExtensions = true;
+  form.maxFieldsSize = 10 * 1024 * 1024; //10 MB
+  form.multiples = true;
+  form.parse(request, (err, fields, files) => {
+    if (err) {
+      response.json({
+        result: "failed",
+        data: {},
+        messege: `Cannot upload images.Error is : ${err}`
+      });
+    }
+
+    var arrayOfFiles = [];
+    if (files[""] instanceof Array) {
+      arrayOfFiles = files[""];
+    } else {
+      arrayOfFiles.push(files[""]);
+    }
+
+    if (arrayOfFiles.length > 0) {
+      var fileNames = [];
+      arrayOfFiles.forEach((eachFile) => {
+        // fileNames.push(eachFile.path)
+        fileNames.push(eachFile.path.split('/')[1]);
+      });
+      response.json({
+        result: "ok",
+        data: fileNames,
+        numberOfImages: fileNames.length,
+        messege: "Upload images successfully"
       });
     } else {
       response.json({
-        result: "ok",
-        data: {
-          title: request.body.title,
-          image: request.body.image,
-          imagePublicId: request.body.imagePublicId,
-          author: request.body.author,
-          likes: request.body.likes,
-          comments: request.body.comments,
-          messege: "Create successfully"
-        }
+        result: "failed",
+        data: {},
+        numberOfImages: 0,
+        messege: "No images to upload !"
       });
     }
   });
 });
+
+router.get('/open_image', (request, response, next) => {
+  let imageName = "uploads/" + request.query.image_name;
+  fs.readFile(imageName, (err, imageData) => {
+    if (err) {
+      response.json({
+        result: "failed",
+        messege: `Cannot read image.Error is : ${err}`
+      });
+      return;
+    }
+    response.writeHead(200, { 'Content-Type': 'image/jpeg' });
+    response.end(imageData); // Send the file data to the browser.
+  });
+});
+
 module.exports = router;
