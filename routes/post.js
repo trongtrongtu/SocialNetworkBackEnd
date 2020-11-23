@@ -39,53 +39,124 @@ router.get('/list_all_post', (request, response) => {
             image: 1,
           }).exec((err, user) => {
             item['author'] = user;
-            let likeArr = item.likes
-            likeArr.map((item1, index1) => {
-              Like.findOne({ _id: item1 }).limit(100).sort({ user: 1 }).select({
-                user: 1,
-                post: 1,
-              }).exec((err, like) => {
-                likeItem.push(like)
-                if (likeItem.length == likeArr.length) {
-                  let commentsArr = item.comments
-                  commentsArr.map((item2, index2) => {
-                    Comment.findOne({ _id: item2 }).limit(100).sort({ user: 1 }).select({
-                      comment: 1,
-                      post: 1,
-                      author: 1,
-                    }).exec((err, comments) => {
-                      let userId = comments.author
-                      User.findOne({ _id: userId }).limit(100).sort({}).select({
-                        fullName: 1,
-                        username: 1,
-                        image: 1,
-                      }).exec((err, user) => {
-                        comments['author'] = user
-                        commentItem.push(comments)
-                        if (commentItem.length == commentsArr.length) {
-                          item['likes'] = likeItem;
-                          item['comments'] = commentItem;
-                          dataArr.push(item)
-                          if (dataArr.length == postArr.length) {
-                            response.json({
-                              result: "ok",
-                              data: {
-                                getFollowedPosts: {
-                                  count: `${postArr.length}`,
-                                  posts: dataArr,
-                                  __typename: "PostsPayload"
-                                }
-                              },
-                              messege: "Query successfully"
-                            });
-                          }
-                        }
+            if ((item.likes && (item.likes).length) > 0) {
+              let likeArr = item.likes
+              likeArr.map((item1, index1) => {
+                Like.findOne({ _id: item1 }).limit(100).sort({ user: 1 }).select({
+                  user: 1,
+                  post: 1,
+                }).exec((err, like) => {
+                  likeItem.push(like)
+                  if (likeItem.length == likeArr.length) {
+                    if ((item.comments && (item.comments).length) > 0) {
+                      let commentsArr = item.comments
+                      commentsArr.map((item2, index2) => {
+                        Comment.findOne({ _id: item2 }).limit(100).sort({ user: 1 }).select({
+                          comment: 1,
+                          post: 1,
+                          author: 1,
+                        }).exec((err, comments) => {
+                          let userId = comments.author
+                          User.findOne({ _id: userId }).limit(100).sort({}).select({
+                            fullName: 1,
+                            username: 1,
+                            image: 1,
+                          }).exec((err, user) => {
+                            comments['author'] = user
+                            commentItem.push(comments)
+                            if (commentItem.length == commentsArr.length) {
+                              item['likes'] = likeItem;
+                              item['comments'] = commentItem;
+                              dataArr.push(item)
+                              if (dataArr.length == postArr.length) {
+                                response.json({
+                                  result: "ok",
+                                  data: {
+                                    getFollowedPosts: {
+                                      count: `${postArr.length}`,
+                                      posts: dataArr,
+                                      __typename: "PostsPayload"
+                                    }
+                                  },
+                                  messege: "Query successfully"
+                                });
+                              }
+                            }
+                          })
+                        })
                       })
-                    })
-                  })
-                }
+                    } else {
+                      item['likes'] = likeItem;
+                      dataArr.push(item)
+                      if (dataArr.length == postArr.length) {
+                        response.json({
+                          result: "ok",
+                          data: {
+                            getFollowedPosts: {
+                              count: `${postArr.length}`,
+                              posts: dataArr,
+                              __typename: "PostsPayload"
+                            }
+                          },
+                          messege: "Query successfully"
+                        });
+                      }
+                    }
+                  }
+                })
               })
-            })
+            } else if ((item.comments && (item.comments).length) > 0) {
+              let commentsArr = item.comments
+              commentsArr.map((item2, index2) => {
+                Comment.findOne({ _id: item2 }).limit(100).sort({ user: 1 }).select({
+                  comment: 1,
+                  post: 1,
+                  author: 1,
+                }).exec((err, comments) => {
+                  let userId = comments.author
+                  User.findOne({ _id: userId }).limit(100).sort({}).select({
+                    fullName: 1,
+                    username: 1,
+                    image: 1,
+                  }).exec((err, user) => {
+                    comments['author'] = user
+                    commentItem.push(comments)
+                    if (commentItem.length == commentsArr.length) {
+                      item['comments'] = commentItem;
+                      dataArr.push(item)
+                      if (dataArr.length == postArr.length) {
+                        response.json({
+                          result: "ok",
+                          data: {
+                            getFollowedPosts: {
+                              count: `${postArr.length}`,
+                              posts: dataArr,
+                              __typename: "PostsPayload"
+                            }
+                          },
+                          messege: "Query successfully"
+                        });
+                      }
+                    }
+                  })
+                })
+              })
+            } else {
+              dataArr.push(item)
+              if (dataArr.length == postArr.length) {
+                response.json({
+                  result: "ok",
+                  data: {
+                    getFollowedPosts: {
+                      count: `${postArr.length}`,
+                      posts: dataArr,
+                      __typename: "PostsPayload"
+                    }
+                  },
+                  messege: "Query successfully"
+                });
+              }
+            }
           })
         })
       } else {
@@ -125,6 +196,7 @@ router.get('/post_detail', (request, response) => {
     } else {
       let likeItem = []
       let commentItem = []
+      postArr.image = `${URL}/open_image?image_name=${postArr.image}`
       let userId = postArr.author
       User.findOne({ _id: userId }).limit(100).sort({}).select({
         fullName: 1,
@@ -132,47 +204,100 @@ router.get('/post_detail', (request, response) => {
         image: 1,
       }).exec((err, user) => {
         postArr['author'] = user;
-        let likeArr = postArr.likes
-        likeArr.map((item1, index1) => {
-          Like.findOne({ _id: item1 }).limit(100).sort({ user: 1 }).select({
-            user: 1,
-            post: 1,
-          }).exec((err, like) => {
-            likeItem.push(like)
-            if (likeItem.length == likeArr.length) {
-              let commentsArr = postArr.comments
-              commentsArr.map((item2, index2) => {
-                Comment.findOne({ _id: item2 }).limit(100).sort({ user: 1 }).select({
-                  comment: 1,
-                  post: 1,
-                  author: 1,
-                }).exec((err, comments) => {
-                  let userId = comments.author
-                  User.findOne({ _id: userId }).limit(100).sort({}).select({
-                    fullName: 1,
-                    username: 1,
-                    image: 1,
-                  }).exec((err, user) => {
-                    comments['author'] = user
-                    commentItem.push(comments)
-                    if (commentItem.length == commentsArr.length) {
-                      postArr['likes'] = likeItem;
-                      postArr['comments'] = commentItem;
-                      response.json({
-                        result: "ok",
-                        data: {
-                          getPost: postArr,
-                          __typename: "PostPayload"
-                        },
-                        messege: "Query successfully"
-                      });
-                    }
+        if ((postArr.likes && (postArr.likes).length) > 0) {
+          let likeArr = postArr.likes
+          likeArr.map((item1, index1) => {
+            Like.findOne({ _id: item1 }).limit(100).sort({ user: 1 }).select({
+              user: 1,
+              post: 1,
+            }).exec((err, like) => {
+              likeItem.push(like)
+              if (likeItem.length == likeArr.length) {
+                if ((postArr.comments && (postArr.comments).length) > 0) {
+                  let commentsArr = postArr.comments
+                  commentsArr.map((item2, index2) => {
+                    Comment.findOne({ _id: item2 }).limit(100).sort({ user: 1 }).select({
+                      comment: 1,
+                      post: 1,
+                      author: 1,
+                    }).exec((err, comments) => {
+                      let userId = comments.author
+                      User.findOne({ _id: userId }).limit(100).sort({}).select({
+                        fullName: 1,
+                        username: 1,
+                        image: 1,
+                      }).exec((err, user) => {
+                        comments['author'] = user
+                        commentItem.push(comments)
+                        if (commentItem.length == commentsArr.length) {
+                          postArr['likes'] = likeItem;
+                          postArr['comments'] = commentItem;
+                          response.json({
+                            result: "ok",
+                            data: {
+                              getPost: postArr,
+                              __typename: "PostPayload"
+                            },
+                            messege: "Query successfully"
+                          });
+                        }
+                      })
+                    })
                   })
-                })
-              })
-            }
+                } else {
+                  postArr['likes'] = likeItem;
+                  response.json({
+                    result: "ok",
+                    data: {
+                      getPost: postArr,
+                      __typename: "PostPayload"
+                    },
+                    messege: "Query successfully"
+                  });
+                }
+              }
+            })
           })
-        })
+        } else if ((postArr.comments && (postArr.comments).length) > 0) {
+          let commentsArr = postArr.comments
+          commentsArr.map((item2, index2) => {
+            Comment.findOne({ _id: item2 }).limit(100).sort({ user: 1 }).select({
+              comment: 1,
+              post: 1,
+              author: 1,
+            }).exec((err, comments) => {
+              let userId = comments.author
+              User.findOne({ _id: userId }).limit(100).sort({}).select({
+                fullName: 1,
+                username: 1,
+                image: 1,
+              }).exec((err, user) => {
+                comments['author'] = user
+                commentItem.push(comments)
+                if (commentItem.length == commentsArr.length) {
+                  postArr['comments'] = commentItem;
+                  response.json({
+                    result: "ok",
+                    data: {
+                      getPost: postArr,
+                      __typename: "PostPayload"
+                    },
+                    messege: "Query successfully"
+                  });
+                }
+              })
+            })
+          })
+        } else {
+          response.json({
+            result: "ok",
+            data: {
+              getPost: postArr,
+              __typename: "PostPayload"
+            },
+            messege: "Query successfully"
+          });
+        }
       })
     }
   });
