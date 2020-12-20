@@ -31,7 +31,9 @@ router.get('/list_all_post', (request, response) => {
         postArr.map((item, index) => {
           let likeItem = []
           let commentItem = []
-          item.image = `${URL}/open_image?image_name=${item.image}`
+          if(item.image){
+            item.image = `${URL}/open_image?image_name=${item.image}`
+          }
           let userId = item.author
           User.findOne({ _id: userId }).limit(100).sort({}).select({
             fullName: 1,
@@ -196,7 +198,9 @@ router.get('/post_detail', (request, response) => {
     } else {
       let likeItem = []
       let commentItem = []
-      postArr.image = `${URL}/open_image?image_name=${postArr.image}`
+      if(postArr.image){
+        postArr.image = `${URL}/open_image?image_name=${postArr.image}`
+      }
       let userId = postArr.author
       User.findOne({ _id: userId }).limit(100).sort({}).select({
         fullName: 1,
@@ -427,12 +431,12 @@ router.post('/create_post', (request, response, next) => {
         var fileNames = [];
         arrayOfFiles.forEach((eachFile) => {
           // fileNames.push(eachFile.path)
-          fileNames.push(eachFile.path.split('/')[1]);
+          fileNames.push(eachFile&&eachFile.path&&eachFile.path.split('/')[1]);
         });
         const newRoom = new Post({
           title: fields.title,
-          image: fileNames[0],
-          imagePublicId: (fileNames[0].split('.'))[0],
+          image: fileNames&&fileNames[0],
+          imagePublicId: fileNames&&fileNames[0]&&fileNames[0].split('.')&&(fileNames[0].split('.'))[0],
           author: fields.authorId,
           likes: [],
           comments: []
@@ -451,7 +455,7 @@ router.post('/create_post', (request, response, next) => {
               data: {
                 title: fields.title,
                 image: fileNames[0],
-                imagePublicId: (fileNames[0].split('.'))[0],
+                imagePublicId: fileNames&&fileNames[0]&&fileNames[0].split('.')&&(fileNames[0].split('.'))[0],
                 author: fields.authorId,
                 likes: [],
                 comments: [],
