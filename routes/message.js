@@ -93,4 +93,30 @@ router.get('/message_with_user_to_room', (request, response) => {
     });
 });
 
+router.get('/messageUser', (request, response) => {
+    ChatUserToUser.find({}).limit(100).sort({ name: 1 }).select({
+        _id: 1,
+        user: 1,
+        data: 1,
+        time: 1,
+        usernamefriend: 1,
+        key: 1,
+        image: 1
+    }).exec((err, message) => {
+        if (err) {
+            response.json({
+                result: "failed",
+                data: [],
+                messege: `Error is : ${err}`
+            });
+        } else {
+            response.json({
+                result: "ok",
+                data: message,
+                messege: "Query successfully"
+            });
+        }
+    });
+});
+
 module.exports = router;

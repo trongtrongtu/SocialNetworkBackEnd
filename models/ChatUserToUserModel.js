@@ -2,18 +2,24 @@ var mongoose = require('mongoose');
 var Schema = mongoose.Schema;
 
 var ChatUserToUserSchema = new Schema({
-    username: {
+    user: {
         type: String,
     },
-    message: {
+    data: {
         type: String,
     },
-    created_date: {
+    time: {
         type: String,
     },
     usernamefriend: {
         type: String,
-    }
+    },
+    image: {
+        type: String,
+    },
+    key: {
+        type: String,
+    },
 });
 
 module.exports = mongoose.model('ChatUserToUser', ChatUserToUserSchema);

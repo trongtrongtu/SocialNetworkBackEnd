@@ -102,30 +102,35 @@ io.on('connection', function (socket) {
             data: data.data,
             user: data.user,
             timeM: data.timeM,
-            roomName: data.roomName
+            roomName: data.roomName,
         });
     })
     socket.on('newMessageFriend', data => {
-        messagesFriend.push({
-            id: max + 1,
-            userId: data.user.id,
-            message: data.data,
-            userName: data.user.name,
-            time: data.timeM
-        })
+        // console.log('aaaaaaaaaa: ', data)
+        // messagesFriend.push({
+        //     id: max + 1,
+        //     userId: data.user.id,
+        //     message: data.data,
+        //     userName: data.user.name,
+        //     time: data.time
+        // })
         let chatMessage = new ChatUserToUser({
-            username: data.user.name,
-            message: data.data,
-            created_date: data.timeM,
-            usernamefriend: data.usernamefriend
+            user: data.user,
+            data: data.data,
+            time: data.time,
+            usernamefriend: data.usernamefriend,
+            image: data.image,
+            key: Math.random()
         });
         chatMessage.save();
         //gửi lại tin nhắn cho tất cả các user dang online
         io.sockets.emit('newMessageFriend', {
             data: data.data,
             user: data.user,
-            timeM: data.timeM,
-            usernamefriend: data.usernamefriend
+            time: data.time,
+            usernamefriend: data.usernamefriend,
+            image: data.image,
+            key: Math.random()
         });
     })
     socket.on('createRoom', data => {

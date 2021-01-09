@@ -100,7 +100,7 @@ router.get('/authUser', (request, response) => {
   });
 });
 
-router.post('/create_user', (request, response) => {
+router.post('/sign_up', (request, response) => {
   const newUser = new User({
     fullName: request.body.fullName,
     email: request.body.email,
@@ -141,6 +141,37 @@ router.post('/create_user', (request, response) => {
           messages: request.body.messages,
           messege: "Create successfully"
         }
+      });
+    }
+  });
+});
+
+router.get('/login', (request, response) => {
+  let login = {
+    username: request.query.username,
+    password: request.query.password
+  };
+  User.find(login).limit(100).sort().select({
+    username: 1,
+    password: 1,
+  }).exec((err, users) => {
+    if (err) {
+      response.json({
+        result: "failed",
+        data: [],
+        messege: `Error is : ${err}`
+      });
+    } else if (users.length == 0) {
+      response.json({
+        result: "failed_login",
+        data: users,
+        messege: "Query check of login failed"
+      });
+    } else {
+      response.json({
+        result: "ok",
+        data: users && users[0],
+        messege: "Query check of login successfully"
       });
     }
   });
