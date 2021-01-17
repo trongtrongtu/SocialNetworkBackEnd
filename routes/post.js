@@ -17,7 +17,8 @@ router.get('/list_all_post', (request, response) => {
     likes: 1,
     comments: 1,
     createdAt: 1,
-    updatedAt: 1
+    updatedAt: 1,
+    time: 1
   }).exec((err, postArr) => {
     if (err) {
       response.json({
@@ -31,7 +32,7 @@ router.get('/list_all_post', (request, response) => {
         postArr.map((item, index) => {
           let likeItem = []
           let commentItem = []
-          if(item.image){
+          if (item.image) {
             item.image = `${URL}/open_image?image_name=${item.image}`
           }
           let userId = item.author
@@ -187,7 +188,8 @@ router.get('/post_detail', (request, response) => {
     likes: 1,
     comments: 1,
     createdAt: 1,
-    updatedAt: 1
+    updatedAt: 1,
+    time: 1
   }).exec((err, postArr) => {
     if (err) {
       response.json({
@@ -198,7 +200,7 @@ router.get('/post_detail', (request, response) => {
     } else {
       let likeItem = []
       let commentItem = []
-      if(postArr.image){
+      if (postArr.image) {
         postArr.image = `${URL}/open_image?image_name=${postArr.image}`
       }
       let userId = postArr.author
@@ -316,7 +318,8 @@ router.get('/list_all_post_user', (request, response) => {
     likes: 1,
     comments: 1,
     createdAt: 1,
-    updatedAt: 1
+    updatedAt: 1,
+    time: 1
   }).exec((err, postArr) => {
     if (err) {
       response.json({
@@ -365,6 +368,7 @@ router.get('/list_all_post_user', (request, response) => {
                           item['comments'] = commentItem;
                           dataArr.push(item)
                           if (dataArr.length == postArr.length) {
+                            console.log('aaaaaaaa: ', dataArr)
                             response.json({
                               result: "ok",
                               data: {
@@ -431,15 +435,16 @@ router.post('/create_post', (request, response, next) => {
         var fileNames = [];
         arrayOfFiles.forEach((eachFile) => {
           // fileNames.push(eachFile.path)
-          fileNames.push(eachFile&&eachFile.path&&eachFile.path.split('/')[1]);
+          fileNames.push(eachFile && eachFile.path && eachFile.path.split('/')[1]);
         });
         const newRoom = new Post({
           title: fields.title,
-          image: fileNames&&fileNames[0],
-          imagePublicId: fileNames&&fileNames[0]&&fileNames[0].split('.')&&(fileNames[0].split('.'))[0],
+          image: fileNames && fileNames[0],
+          imagePublicId: fileNames && fileNames[0] && fileNames[0].split('.') && (fileNames[0].split('.'))[0],
           author: fields.authorId,
           likes: [],
-          comments: []
+          comments: [],
+          time: new Date().toLocaleString()
         });
         newRoom.save((err) => {
           debugger;
@@ -455,7 +460,7 @@ router.post('/create_post', (request, response, next) => {
               data: {
                 title: fields.title,
                 image: fileNames[0],
-                imagePublicId: fileNames&&fileNames[0]&&fileNames[0].split('.')&&(fileNames[0].split('.'))[0],
+                imagePublicId: fileNames && fileNames[0] && fileNames[0].split('.') && (fileNames[0].split('.'))[0],
                 author: fields.authorId,
                 likes: [],
                 comments: [],

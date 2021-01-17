@@ -105,15 +105,15 @@ router.post('/sign_up', (request, response) => {
     fullName: request.body.fullName,
     email: request.body.email,
     username: request.body.username,
-    passwordResetToken: request.body.passwordResetToken,
-    passwordResetTokenExpiry: request.body.passwordResetTokenExpiry,
+    // passwordResetToken: request.body.passwordResetToken,
+    // passwordResetTokenExpiry: request.body.passwordResetTokenExpiry,
     password: request.body.password,
-    image: request.body.image,
-    imagePublicId: request.body.imagePublicId,
-    coverImage: request.body.coverImage,
-    coverImagePublicId: request.body.coverImagePublicId,
-    isOnline: request.body.isOnline,
-    messages: request.body.messages,
+    // image: request.body.image,
+    // imagePublicId: request.body.imagePublicId,
+    // coverImage: request.body.coverImage,
+    // coverImagePublicId: request.body.coverImagePublicId,
+    isOnline: true,
+    // messages: request.body.messages,
   });
   newUser.save((err) => {
     debugger;
@@ -124,24 +124,20 @@ router.post('/sign_up', (request, response) => {
         messege: `Error is : ${err}`
       });
     } else {
-      response.json({
-        result: "ok",
-        data: {
-          fullName: request.body.fullName,
-          email: request.body.email,
-          username: request.body.username,
-          passwordResetToken: request.body.passwordResetToken,
-          passwordResetTokenExpiry: request.body.passwordResetTokenExpiry,
-          password: request.body.password,
-          image: request.body.image,
-          imagePublicId: request.body.imagePublicId,
-          coverImage: request.body.coverImage,
-          coverImagePublicId: request.body.coverImagePublicId,
-          isOnline: request.body.isOnline,
-          messages: request.body.messages,
-          messege: "Create successfully"
-        }
+      let login = {
+        username: request.body.username,
+        password: request.body.password
+      };
+      User.find(login).limit(100).sort().select({
+        username: 1,
+        password: 1,
+      }).exec((err, users) => {
+        response.json({
+          result: "ok",
+          data: users && users[0]
+        });
       });
+
     }
   });
 });

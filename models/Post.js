@@ -26,6 +26,9 @@ const postSchema = Schema(
         ref: 'Comment',
       },
     ],
+    time: {
+      type: String,
+    },
   },
   {
     timestamps: true,

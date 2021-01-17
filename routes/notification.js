@@ -7,6 +7,8 @@ let Comment = require('../models/Comment');
 var mongoose = require('mongoose');
 const User = require('../models/User');
 
+const URL = 'http://localhost:3001'
+
 router.get('/list_all_notification', (request, response) => {
   Notification.find({}).limit(100).sort({ user: 1 }).select({
     author: 1,
@@ -46,6 +48,9 @@ router.get('/list_all_notification', (request, response) => {
                 Post.findOne({ _id: likeId }).limit(100).sort({}).select({
                   image: 1,
                 }).exec((err, post) => {
+                  if (post && post.image) {
+                    post.image = `${URL}/open_image?image_name=${post.image}`
+                  }
                   like['post'] = post
                   item['like'] = like;
                   dataArr.push(item)
@@ -106,6 +111,9 @@ router.get('/list_all_notification', (request, response) => {
                   title: 1,
                   image: 1,
                 }).exec((err, post) => {
+                  if (post && post.image) {
+                    post.image = `${URL}/open_image?image_name=${post.image}`
+                  }
                   comment['post'] = post
                   item['comment'] = comment;
                   dataArr.push(item)
