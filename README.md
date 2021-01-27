@@ -1,4 +1,5 @@
 Social Network BackEnd
 
-#install: yarn
-#run project: yarn start
+#Install: yarn
+
+#Run project: yarn start
